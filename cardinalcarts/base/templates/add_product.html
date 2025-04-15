@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Product</title>
+  <link rel="stylesheet" href="{% static 'css/add_product.css' %}" />
+</head>
+<body>
+
+<header>
+  <div class="logoimg">
+    <a href="{% url 'dashboard' %}">
+      <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+    </a>
+    <h1>ADMIN</h1>
+  </div>
+  
+  <nav class="navbar">
+    <a href="{% url 'adminTransaction' %}">Transactions</a>
+    <a href="{% url 'adminUser' %}">User</a>
+    <a href="{% url 'adminInventory' %}">Inventory</a>
+    <a href="{% url 'adminOrder' %}">Orders</a>
+    <a href="{% url 'dashboard' %}" class="home-btn">HOME</a>
+    <form method="POST" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="logout-btn">Logout</button>
+    </form>
+  </nav>
+</header>
+
+<main>
+  <div class="form-container">
+    <h2>Add Product</h2>
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="submit-btn">Add Product</button>
+    </form>
+  </div>
+</main>
+
+</body>
+</html>

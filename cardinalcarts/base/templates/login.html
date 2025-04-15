@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CardinalCarts</title>
+  <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-content">
+      <div class="navbar-left">
+        <a href="{% url 'login' %}">
+          <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+        </a>
+      </div>
+      <div class="navbar-center">
+        <h1>CardinalCarts</h1>
+      </div>
+      <div class="navbar-right"></div> 
+    </div>
+  </nav>
+  
+  
+
+  <div class="container">
+    <div class="intro">
+      <h2>Hi, this is <br /><span>CardinalCart!</span></h2>
+      <p>
+        CardinalCart is a website application designed to cater the needs of
+        students, faculty, and staff by providing a more efficient and
+        convenient way to purchase school materials and merchandise at Mapúa
+        University via online. We hope to be of great service to y’all!
+        Viva Mapua!
+      </p>
+    </div>
+
+    <div class="login-box">
+      <div class="tabs">
+        <span class="active">Log In</span>
+        <a href="{% url 'register' %}" class="inactive">Register</a>
+      </div>
+      <form method="POST">
+        {% csrf_token %}
+        {% if form.errors %}
+          <p class="error">Invalid credentials. Please try again.</p>
+        {% endif %}
+      
+        <input type="email" name="email" placeholder="Email" value="{{ request.POST.email }}" required />
+        <input type="password" name="password" placeholder="Password" value="{{ request.POST.password }}" required />
+      
+        <a href="#" class="forgot">Forgot password?</a>
+        <button type="submit">Log In</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Add Order</title>
+  <link rel="stylesheet" href="{% static 'css/addOrder.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logoimg">
+            <a href="{% url 'dashboard' %}">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+              </a>
+            <H1>ADMIN</H1>
+        </div>
+        
+        <nav class="navbar">
+            <a href="{% url 'adminTransaction' %}">Transactions</a>
+            <a href="{% url 'adminUser' %}">User</a>
+            <a href="{% url 'adminInventory' %}">Inventory</a>
+            <a href="{% url 'adminOrder' %}">Orders</a>
+            <a href="{% url 'dashboard' %}" class="home-btn">HOME</a>
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+          <h2 class="form-title">Add New Order</h2>
+      
+          {% if errors %}
+            <div class="error-messages">
+              <ul>
+                {% for error in errors %}
+                  <li class="error">{{ error }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+      
+          <form method="POST" action="{% url 'add_order' %}" class="order-form">
+            {% csrf_token %}
+      
+            <div class="form-row">
+              <div class="form-group">
+                <label for="first_name">First Name</label>
+                <input type="text" name="first_name" id="first_name" required>
+              </div>
+      
+              <div class="form-group">
+                <label for="last_name">Last Name</label>
+                <input type="text" name="last_name" id="last_name" required>
+              </div>
+            </div>
+      
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" required>
+              </div>
+      
+              <div class="form-group">
+                <label for="phone_number">Phone Number</label>
+                <input type="text" name="phone_number" id="phone_number" required>
+              </div>
+            </div>
+      
+            <div class="form-group">
+              <label for="order_number">Order Number</label>
+              <input type="text" name="order_number" id="order_number" value="{{ order_number }}" readonly>
+            </div>
+      
+            <div class="form-row">
+              <div class="form-group">
+                <label for="user_status">User Status</label>
+                <select name="user_status" id="user_status" required>
+                  <option value="Student">Student</option>
+                  <option value="Faculty">Faculty</option>
+                  <option value="Staff">Staff</option>
+                </select>
+              </div>
+      
+              <div class="form-group">
+                <label for="status">Order Status</label>
+                <select name="status" id="status" required>
+                  <option value="Processing">Processing</option>
+                  <option value="Ready for Pickup">Ready for Pickup</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+            </div>
+      
+            <div class="form-group">
+              <label for="payment_method">Payment Method</label>
+              <select name="payment_method" id="payment_method" required>
+                <option value="" disabled selected>Select payment method</option>
+                <option value="pickup">Pay upon pickup</option>
+                <option value="online">Online payment</option>
+              </select>
+            </div>
+      
+            <div class="form-group">
+              <label for="items">Select Items</label>
+              <select name="items" id="items" multiple required>
+                {% for product in products %}
+                  <option value="{{ product.id }}">{{ product.name }} - ₱{{ product.price }}</option>
+                {% endfor %}
+              </select>
+            </div>
+      
+            <div class="form-group">
+              <label for="quantities">Quantities</label>
+              <input type="number" name="quantities" id="quantities" required>
+            </div>
+      
+            <div class="form-group">
+              <label for="pickup_date">Pickup Date</label>
+              <input type="date" name="pickup_date" id="pickup_date">
+            </div>
+      
+            <div class="form-group">
+              <button type="submit" class="submit-btn">Add Order</button>
+            </div>
+          </form>
+        </div>
+      </main>
+      
+</body>
+</html>

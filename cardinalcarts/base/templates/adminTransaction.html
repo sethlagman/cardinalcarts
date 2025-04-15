@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Transaction</title>
+  <link rel="stylesheet" href="{% static 'css/adminTransaction.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logoimg">
+            <a href="{% url 'dashboard' %}">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+            </a>
+            <h1>ADMIN</h1>
+        </div>
+
+        <nav class="navbar">
+            <a href="{% url 'adminTransaction' %}" class="active">Transactions</a>
+            <a href="{% url 'adminUser' %}">User</a>
+            <a href="{% url 'adminInventory' %}">Inventory</a>
+            <a href="{% url 'adminOrder' %}">Orders</a>
+            <a href="{% url 'dashboard' %}" class="home-btn">HOME</a>
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </nav>
+    </header>
+
+    <main>
+
+        <div class="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Items</th>
+                        <th>Order Number</th>
+                        <th>Recipient</th>
+                        <th>Date of Order</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.items|linebreaksbr }}</td>
+                        <td>{{ transaction.order_number }}</td>
+                        <td>{{ transaction.user.get_full_name }}</td>
+                        <td>{{ transaction.date_of_order }}</td>
+                        <td>₱{{ transaction.total_price|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

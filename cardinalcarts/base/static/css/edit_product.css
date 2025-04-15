@@ -1,0 +1,141 @@
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+  }
+  
+  body {
+    background: linear-gradient(to bottom, #fff, #e0e0e0);
+    color: #333;
+    min-height: 100vh;
+  }
+
+  header {
+    background-color: #d33;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+  .logoimg {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+  }
+  
+  header h1 {
+    font-size: 50px;
+    font-weight: 100px;
+    color: white;
+  }
+  
+  .logo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .navbar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 10px;
+    transition: background 0.2s ease;
+  }
+  
+  .navbar a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+  }
+  
+  .home-btn {
+    background-color: #ccc;
+    color: black;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  .logout-btn {
+    background-color: black;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .container {
+    background-color: #fff;
+    padding: 35px;
+    border-radius: 10px;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 26px;
+    color: #d33;
+  }
+  
+  .form-box p {
+    margin-bottom: 20px;
+  }
+  
+  .form-box label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 6px;
+  }
+  
+  .form-box input[type="text"],
+  .form-box input[type="number"],
+  .form-box input[type="file"],
+  .form-box textarea,
+  .form-box select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-top: 4px;
+    margin-bottom: 12px;
+  }
+  
+  .submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #d33;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .submit-btn:hover {
+    background-color: #b22;
+  }
+  
+  .content-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    min-height: calc(100vh - 80px); /* Adjust if header is taller or shorter */
+  }

@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Orders</title>
+  <link rel="stylesheet" href="{% static 'css/adminOrder.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logoimg">
+            <a href="{% url 'dashboard' %}">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+              </a>
+            <H1>ADMIN</H1>
+        </div>
+        
+        <nav class="navbar">
+            <a href="{% url 'adminTransaction' %}">Transactions</a>
+            <a href="{% url 'adminUser' %}">User</a>
+            <a href="{% url 'adminInventory' %}">Inventory</a>
+            <a href="{% url 'adminOrder' %}" class="active">Orders</a>
+            <a href="{% url 'dashboard' %}" class="home-btn">HOME</a>
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="Controls">
+            <a href="{% url 'add_order' %}">
+                <button class="Controls-btn">Add Order</button>
+            </a>
+            <a href="{% url 'delete_order' %}">
+                <button class="Controls-btn">Delete</button>
+            </a>
+            <a href="{% url 'edit_order' %}">
+                <button class="Controls-btn">Edit</button>
+            </a>
+        </div>
+        <div class="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Items</th>
+                        <th>Order Number</th>
+                        <th>Recipient</th>
+                        <th>Amount to be Paid</th>
+                        <th>Status</th>
+                        <th>Pickup Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>
+                            {% for item in order.items.all %}
+                                {{ item.product.name }} ({{ item.quantity }})<br>
+                            {% endfor %}
+                        </td>
+                        <td>{{ order.order_number }}</td>
+                        <td>{{ order.user.get_full_name }}</td>
+                        <td>₱{{ order.total_price|floatformat:2 }}</td>
+                        <td>{{ order.status|capfirst }}</td>
+                        <td>
+                            {% if order.pickup_date %}
+                                {{ order.pickup_date }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

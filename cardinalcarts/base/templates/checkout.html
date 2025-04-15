@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout</title>
+  <link rel="stylesheet" href="{% static 'css/checkout.css' %}" />
+</head>
+<body>
+<header>
+  <div class="logo-search">
+    <a href="{% url 'dashboard' %}">
+      <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+    </a>
+  </div>
+  <nav class="navbar">
+    <a href="#">Notification</a>
+    <a href="{% url 'cart' %}">Cart</a>
+    <a href="{% url 'wishlist' %}">Wishlists</a>
+    <a href="{% url 'orderHistory' %}">Order History</a>
+    <a href="{% url 'dashboard' %}" class="home-btn">HOME</a>
+    <form method="POST" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="logout-btn">Logout</button>
+    </form>
+  </nav>
+</header>
+
+<main>
+  <div class="checkout-container">
+    <h2>Checkout</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <p>Select Payment Method:</p>
+      <label><input type="radio" name="payment_method" value="online" required> Pay Online</label><br>
+      <label><input type="radio" name="payment_method" value="pickup"> Pay Upon Pickup</label><br><br>
+      <button type="submit" class="checkout-btn">Place Order</button>
+    </form>
+  </div>
+</main>
+</body>
+</html>

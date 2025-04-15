@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order History</title>
+  <link rel="stylesheet" href="{% static 'css/orderHistory.css' %}" />
+</head>
+<body>
+<header>
+  <div class="logo-search">
+    <a href="{% url 'dashboard' %}">
+      <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+    </a>
+  </div>
+  <nav class="navbar">
+    <nav class="navbar">
+      <div class="notification-dropdown">
+        <a href="#" class="notification-link">Notification</a>
+        <div class="notification-content">
+          {% if ready_orders %}
+            {% for order in ready_orders %}
+              <div class="notification-item">
+                <strong>Order #{{ order.order_number }}</strong><br>
+                Pickup Date: {{ order.pickup_date|default:"N/A" }}
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="notification-item">No orders ready for pickup.</div>
+          {% endif %}
+        </div>
+      </div>
+    <a href="{% url 'cart' %}">Cart</a>
+    <a href="{% url 'wishlist' %}">Wishlists</a>
+    <a href="{% url 'orderHistory' %}" class="active">Order History</a>
+    <a href="{% url 'dashboard' %}" class="home-btn">HOME</a>
+    <form method="POST" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="logout-btn">Logout</button>
+    </form>
+  </nav>
+</header>
+
+<main>
+  <!-- Show the empty orders message outside the container if no orders exist -->
+  {% if not orders %}
+  <div class="empty-order-msg-container">
+    <p class="empty-order-msg">Your order history is empty.</p>
+  </div>
+  {% else %}
+  <div class="order-container">
+    <h2>Your Orders</h2>
+    <table class="order-table">
+      <thead>
+        <tr>
+          <th>Order No.</th>
+          <th>Items</th>
+          <th>Status</th>
+          <th>Order Date</th>
+          <th>Pickup Date</th>
+          <th>Total Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td>#{{ order.order_number }}</td>
+          <td>
+            <ul class="item-list">
+              {% for item in order.items.all %}
+              <li>{{ item.product.name }} (x{{ item.quantity }})</li>
+              {% endfor %}
+            </ul>
+          </td>
+          <td>
+            <span class="status status-{{ order.status|lower|slugify }}">{{ order.status|capfirst }}</span>
+          </td>
+          <td>{{ order.order_date|date:"M d, Y" }}</td>
+          <td>
+            {% if order.pickup_date %}
+              {{ order.pickup_date|date:"M d, Y" }}
+            {% else %}
+              N/A
+            {% endif %}
+          </td>
+          <td>₱{{ order.total_price|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</main>
+</body>
+</html>

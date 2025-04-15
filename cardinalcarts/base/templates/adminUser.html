@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin User Management</title>
+  <link rel="stylesheet" href="{% static 'css/adminUser.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logoimg">
+            <a href="{% url 'dashboard' %}">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+            </a>
+            <h1>ADMIN</h1>
+        </div>
+        <nav class="navbar">
+            <a href="{% url 'adminTransaction' %}">Transactions</a>
+            <a href="{% url 'adminUser' %}" class="active">User</a>
+            <a href="{% url 'adminInventory' %}">Inventory</a>
+            <a href="{% url 'adminOrder' %}">Orders</a>
+            <a href="{% url 'dashboard' %}" class="home-btn">HOME</a>
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Logout</button>
+              </form>
+        </nav>
+    </header>
+    <main>
+        <div class="Controls">
+            <a href="{% url 'add_user' %}" class="Controls-btn">Add</a>
+            <a href="{% url 'delete_user' %}" class="Controls-btn">Delete</a>
+            <a href="{% url 'edit_user' %}" class="Controls-btn">Edit</a>
+        </div>
+        <div class="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>User Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.first_name.title }} {{ user.last_name.title }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.profile.phone_number }}</td>
+                        <td>{{ user.profile.user_status.title }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

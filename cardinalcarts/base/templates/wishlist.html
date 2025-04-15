@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wishlist</title>
+  <link rel="stylesheet" href="{% static 'css/wishlist.css' %}" />
+</head>
+<body>
+  <header>
+    <div class="logo-search">
+      <a href="{% url 'dashboard' %}">
+        <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+      </a>
+      <input type="text" placeholder="Search" class="search-box" />
+    </div>
+    <nav class="navbar">
+      <nav class="navbar">
+        <div class="notification-dropdown">
+          <a href="#" class="notification-link">Notification</a>
+          <div class="notification-content">
+            {% if ready_orders %}
+              {% for order in ready_orders %}
+                <div class="notification-item">
+                  <strong>Order #{{ order.order_number }}</strong><br>
+                  Pickup Date: {{ order.pickup_date|default:"N/A" }}
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="notification-item">No orders ready for pickup.</div>
+            {% endif %}
+          </div>
+        </div>
+      <a href="{% url 'cart' %}">Cart</a>
+      <a href="{% url 'wishlist' %}" class="active">Wishlists</a>
+      <a href="{% url 'orderHistory' %}">Order History</a>
+      <a href="{% url 'dashboard' %}" class="home-btn">HOME</a>
+      <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="logout-btn">Logout</button>
+      </form>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Only show the wishlist container if there are items in the wishlist -->
+    {% if wishlist_items %}
+      <form method="POST" action="{% url 'remove_from_wishlist' %}">
+        {% csrf_token %}
+        <div class="wishlist-container">
+          <div class="wishlist-header">
+            <div class="col">Product</div>
+            <div class="col">Stock</div>
+          </div>
+
+          {% for item in wishlist_items %}
+            <div class="wishlist-item">
+              <div class="col product-info">
+                <div class="product-select">
+                  <input type="checkbox" name="remove_items" value="{{ item.id }}" />
+                </div>
+                <div class="product-image">
+                  <img src="{{ item.product.image.url }}" />
+                </div>
+                <span class="product-name">{{ item.product.name }}</span>
+              </div>
+              <div class="col stock-status">
+                {% if item.product.quantity > 0 %}
+                  In Stock
+                {% else %}
+                  Out of Stock
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="wishlist-actions">
+          <button class="remove-btn" type="submit">Remove</button>
+        </div>
+      </form>
+    {% else %}
+    <div>
+      <p class="empty-wishlist-msg">Your wishlist is empty.</p>
+    </div>
+    {% endif %}
+  </main>
+</body>
+</html>

@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cart</title>
+  <link rel="stylesheet" href="{% static 'css/cart.css' %}" />
+</head>
+<body>
+<header>
+  <div class="logo-search">
+    <a href="{% url 'dashboard' %}">
+      <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+    </a>
+    <input type="text" placeholder="Search" class="search-box" />
+  </div>
+  <nav class="navbar">
+    <nav class="navbar">
+      <div class="notification-dropdown">
+        <a href="#" class="notification-link">Notification</a>
+        <div class="notification-content">
+          {% if ready_orders %}
+            {% for order in ready_orders %}
+              <div class="notification-item">
+                <strong>Order #{{ order.order_number }}</strong><br>
+                Pickup Date: {{ order.pickup_date|default:"N/A" }}
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="notification-item">No orders ready for pickup.</div>
+          {% endif %}
+        </div>
+      </div>
+    <a href="{% url 'cart' %}" class="active">Cart</a>
+    <a href="{% url 'wishlist' %}">Wishlists</a>
+    <a href="{% url 'orderHistory' %}">Order History</a>
+    <a href="{% url 'dashboard' %}" class="home-btn">HOME</a>
+    <form method="POST" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="logout-btn">Logout</button>
+    </form>
+  </nav>
+</header>
+
+<main>
+  <div>
+  <div class="cart-container">
+    {% if cart_items %}
+      <div class="cart-header">
+        <div class="col">Product</div>
+        <div class="col">Unit Price</div>
+        <div class="col">Quantity</div>
+        <div class="col">Total Price</div>
+      </div>
+
+      
+      <form method="POST" action="{% url 'remove_from_cart' %}">
+        {% csrf_token %}
+        {% for item in cart_items %}
+        <div class="cart-item">
+          <div class="col product-info">
+            <input type="checkbox" name="remove_items" value="{{ item.id }}">
+            <div class="product-image">
+              <img src="{{ item.product.image.url }}" />
+            </div>
+            <span class="product-name">{{ item.product.name }}</span>
+          </div>
+          <div class="col">₱{{ item.product.price }}</div>
+          <div class="col quantity">
+            <span>{{ item.quantity }}</span>
+          </div>
+          <div class="col">₱{{ item.total_price }}</div>
+        </div>
+        {% endfor %}
+        
+        <div class="cart-actions">
+          
+          <button class="remove-btn" type="submit">Remove</button>
+        </form>
+          <form method="GET" action="{% url 'checkout' %}">
+            <div class="cart-actions">
+              <button class="checkout-btn" type="submit">Checkout</button>
+            </div>
+          </form>
+        </div>
+
+    {% else %}
+      <p class="empty-cart-msg">Your cart is empty.</p>
+    {% endif %}
+  </div>
+</div>
+</main>
+</body>
+</html>

@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Delete Order</title>
+  <link rel="stylesheet" href="{% static 'css/deleteOrder.css' %}" />
+</head>
+<body>
+  <header>
+    <div class="logoimg">
+        <a href="{% url 'dashboard' %}">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+          </a>
+        <H1>ADMIN</H1>
+    </div>
+    
+    <nav class="navbar">
+        <a href="{% url 'adminTransaction' %}">Transactions</a>
+        <a href="{% url 'adminUser' %}">User</a>
+        <a href="{% url 'adminInventory' %}" class="active">Inventory</a>
+        <a href="{% url 'adminOrder' %}">Orders</a>
+        <a href="{% url 'dashboard' %}" class="home-btn">HOME</a>
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </nav>
+</header>
+  
+  <main>
+    <div class="delete-container">
+      <h2 class="title">Delete Order</h2>
+      <form method="POST" class="form-box">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="order_number">Enter Order Number to Delete:</label>
+          <input type="text" id="order_number" name="order_number" required />
+        </div>
+        <div class="form-group">
+          <button type="submit" class="Controls-btn">Delete Order</button>
+        </div>
+      </form>
+    </div>
+  </main>
+  </body>
+  
+</html>

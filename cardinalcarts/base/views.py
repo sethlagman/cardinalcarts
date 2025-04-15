@@ -1,0 +1,501 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, logout
+from django.contrib.auth.decorators import login_required
+from .forms import RegisterForm, ProductForm
+from .models import Profile, Product, CartItem, WishlistItem, OrderItem, Order, Transaction
+from django.contrib.auth.models import User
+from django.views.decorators.http import require_POST
+from django.contrib.auth import login as auth_login
+from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponseForbidden
+import random
+from django.contrib import messages
+from datetime import timezone
+from django.db import IntegrityError
+from django.db.models import Q
+
+def login_view(request):
+    if request.user.is_authenticated:
+        if request.user.is_staff:
+            return redirect('adminUser')
+        return redirect('dashboard')
+    
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        try:
+            user = User.objects.get(email=email)
+            user = authenticate(request, username=user.username, password=password)
+            if user:
+                auth_login(request, user)
+
+                if user.is_staff:
+                    return redirect('adminInventory')
+                return redirect('dashboard')
+        except User.DoesNotExist:
+            pass
+    return render(request, 'login.html')
+
+
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            # Create the user instance
+            user = form.save(commit=False)
+            password = form.cleaned_data['password']
+            user.set_password(password)
+
+            # Check if the user is an admin and set `is_staff` to True
+            user_status = form.cleaned_data['user_status']
+            if user_status == 'staff':
+                user.is_staff = True  # Give admin privileges
+
+            user.save()
+
+            # Create a profile instance
+            Profile.objects.create(
+                user=user,
+                phone_number=form.cleaned_data['phone_number'],
+                user_status=user_status,
+            )
+            return redirect('login')  # Redirect to login page after successful registration
+    else:
+        form = RegisterForm()
+
+    return render(request, 'register.html', {'form': form})
+
+
+@require_POST
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+@login_required
+def dashboard(request):
+    query = request.GET.get('q', '')
+    products = Product.objects.filter(name__icontains=query) if query else Product.objects.all()
+    ready_orders = Order.objects.filter(status="Ready for Pickup", user=request.user)
+    if query:
+        products = Product.objects.filter(Q(name__icontains=query) | Q(description__icontains=query))
+    else:
+        products = Product.objects.all()
+    return render(request, 'dashboard.html', {'products': products, 'query': query, 'ready_orders': ready_orders})
+
+
+@login_required
+def view_order(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    return render(request, 'viewOrder.html', {'product': product})
+
+
+@login_required
+def wishlist(request):
+    query = request.GET.get("q")
+    products = Product.objects.filter(name__icontains=query) if query else Product.objects.all()
+    ready_orders = Order.objects.filter(status="Ready for Pickup", user=request.user)
+    wishlist_items = WishlistItem.objects.filter(user=request.user)
+    return render(request, 'wishlist.html', {'wishlist_items': wishlist_items, 'ready_orders': ready_orders})
+
+
+@login_required
+def add_to_wishlist(request, product_id):
+    product = Product.objects.get(id=product_id)
+
+    # Check if the product is already in the wishlist for the logged-in user
+    if not WishlistItem.objects.filter(user=request.user, product=product).exists():
+        # If not, add the product to the wishlist
+        WishlistItem.objects.create(user=request.user, product=product)
+
+    return redirect('wishlist')
+
+
+@login_required
+def remove_from_wishlist(request):
+    if request.method == "POST":
+        # Get selected items to remove
+        selected_items = request.POST.getlist('remove_items')
+        WishlistItem.objects.filter(id__in=selected_items).delete()
+    return redirect('wishlist')
+
+@login_required
+def cart(request):
+    query = request.GET.get("q")
+    products = Product.objects.filter(name__icontains=query) if query else Product.objects.all()
+
+    ready_orders = Order.objects.filter(status="Ready for Pickup", user=request.user)
+    cart_items = CartItem.objects.filter(user=request.user)
+    return render(request, 'cart.html', {'cart_items': cart_items, 'ready_orders': ready_orders})
+
+
+@login_required
+def add_to_cart(request, product_id):
+    if request.method == 'POST':
+        product = get_object_or_404(Product, id=product_id)
+        quantity = int(request.POST.get('quantity', 1))
+
+        cart_item, created = CartItem.objects.get_or_create(user=request.user, product=product)
+        if not created:
+            cart_item.quantity += quantity
+        else:
+            cart_item.quantity = quantity
+        cart_item.save()
+
+        return redirect('cart')
+
+
+@login_required
+def remove_from_cart(request):
+    if request.method == "POST":
+        item_ids = request.POST.getlist('remove_items')
+        CartItem.objects.filter(id__in=item_ids, user=request.user).delete()
+    return redirect('cart')
+
+
+@login_required
+def orderHistory(request):
+    query = request.GET.get("q")
+    products = Product.objects.filter(name__icontains=query) if query else Product.objects.all()
+    ready_orders = Order.objects.filter(status="Ready for Pickup", user=request.user)
+    orders = Order.objects.filter(user=request.user).order_by('-order_date')
+    for order in orders:
+        total_price = 0
+        for item in order.items.all():
+            
+            if item.total_price is None:
+                item.total_price = item.product.price * item.quantity
+            total_price += item.total_price
+        order.total_price = total_price
+        
+    return render(request, 'orderHistory.html', {'orders': orders, 'ready_orders': ready_orders})
+
+
+@login_required
+def checkout(request):
+    if request.method == 'POST':
+        payment_method = request.POST.get('payment_method')
+        selected_items = CartItem.objects.filter(user=request.user)
+        if not selected_items:
+            return redirect('cart')
+
+        # Create a unique order number
+        order_number = f"{random.randint(10000000, 99999999)}"
+        total_amount = sum(item.total_price for item in selected_items)
+
+        order = Order.objects.create(
+            user=request.user,
+            order_number=order_number,
+            status='Processing',
+            payment_method=payment_method,
+            total_amount=total_amount,
+        )
+
+        for item in selected_items:
+            OrderItem.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity,
+                price=item.product.price
+            )
+
+            item.product.quantity -= item.quantity
+            item.product.save()
+
+        selected_items.delete()
+        return redirect('orderHistory')
+
+    return render(request, 'checkout.html')
+
+@login_required
+def viewOrder(request):
+    return render(request, 'viewOrder.html')
+
+
+#! Admin page
+
+@staff_member_required
+def adminInventory(request):
+    products = Product.objects.all()
+    return render(request, 'adminInventory.html', {'products': products})
+
+
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('adminInventory')
+    else:
+        form = ProductForm()
+    return render(request, 'add_product.html', {'form': form})
+
+
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('adminInventory')
+    else:
+        form = ProductForm(instance=product)
+    return render(request, 'edit_product.html', {'form': form})
+
+
+def delete_product(request, product_id):
+    # Ensure only staff (admin) can delete products
+    if not request.user.is_staff:
+        return HttpResponseForbidden("You do not have permission to delete this product.")
+    
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        product.delete()
+        return redirect('adminInventory')
+
+    return HttpResponseForbidden("Invalid request method.")
+
+
+@staff_member_required
+def adminOrder(request):
+    orders = Order.objects.all()
+    
+    for order in orders:
+        total_price = 0
+        for item in order.items.all():
+            
+            if item.total_price is None:
+                item.total_price = item.product.price * item.quantity
+            total_price += item.total_price
+        order.total_price = total_price
+        
+    context = {
+        'orders': orders,
+    }
+    return render(request, 'adminOrder.html', context)
+
+
+def add_order(request):
+    if request.method == 'POST':
+        # Get form data
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        status = request.POST.get('status')
+        payment_method = request.POST.get('payment_method')
+        pickup_date = request.POST.get('pickup_date')
+
+        # Look for an existing user
+        user = User.objects.filter(first_name=first_name, last_name=last_name).first()
+
+        if not user:
+            email = request.POST.get('email')
+            phone_number = request.POST.get('phone_number')
+            user_status = request.POST.get('user_status')
+
+            # Create a new user if not found
+            user = User.objects.create_user(
+                username=f"{first_name.lower()}{last_name.lower()}",
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                password="defaultpassword"
+            )
+
+            Profile.objects.create(
+                user=user,
+                phone_number=phone_number,
+                user_status=user_status
+            )
+
+        # Validation before creating order items
+        items = request.POST.getlist('items')
+        quantities = request.POST.getlist('quantities')
+
+        errors = []
+
+        # Validate if stock is sufficient for each item
+        for item_id, quantity in zip(items, quantities):
+            product = Product.objects.get(id=item_id)
+            quantity = int(quantity)
+
+            if quantity > product.quantity:
+                errors.append(f"Not enough stock for {product.name}. Available: {product.quantity}, Requested: {quantity}")
+
+        # If there are errors, pass them back to the form and don't create the order
+        if errors:
+            order_number = f"{random.randint(10000000, 99999999)}"
+            return render(request, 'addOrder.html', {'errors': errors, 'order_number': order_number, 'products': Product.objects.all()})
+
+        # Create the order only after validating everything
+        order_number = f"{random.randint(10000000, 99999999)}"
+        order = Order.objects.create(
+            user=user,
+            order_number=order_number,
+            status=status,
+            payment_method=payment_method,
+            pickup_date=pickup_date if pickup_date else None
+        )
+
+        total_amount = 0
+        for item_id, quantity in zip(items, quantities):
+            product = Product.objects.get(id=item_id)
+            quantity = int(quantity)
+            total_price = product.price * quantity
+            total_amount += total_price
+
+            # Create order items and update stock
+            OrderItem.objects.create(
+                order=order,
+                product=product,
+                quantity=quantity,
+                price=product.price,
+                total_price=total_price
+            )
+
+            # Update the stock
+            product.quantity -= quantity
+            product.save()
+
+        # Update the total amount of the order
+        order.total_amount = total_amount
+        order.save()
+
+        return redirect('adminOrder')  # Redirect to the orders page
+
+    order_number = f"{random.randint(10000000, 99999999)}"
+    products = Product.objects.all()
+
+    return render(request, 'addOrder.html', {'order_number': order_number, 'products': products})
+
+
+def edit_order(request):
+    order = None
+    error = None
+    success = None
+
+    if request.method == "POST":
+        submit_btn = request.POST.get("submit_btn")
+
+        if submit_btn == "Search Order":
+            order_number = request.POST.get("order_number")
+            try:
+                order = Order.objects.get(order_number=order_number)
+                order.total_amount = sum(item.product.price * item.quantity for item in order.items.all())
+            except Order.DoesNotExist:
+                error = "Order not found."
+
+        elif submit_btn == "Update Order":
+            order_number = request.POST.get("order_number")
+            pickup_date = request.POST.get("pickup_date")
+            status = request.POST.get("status")
+            try:
+                order = Order.objects.get(order_number=order_number)
+                order.pickup_date = pickup_date
+                order.status = status
+                order.save()
+
+                if status == "Completed":
+                    # Generate plain-text summary of items
+                    item_summary = ""
+                    for item in order.items.all():
+                        item_summary += f"{item.product.name} (x{item.quantity}) - ₱{item.price}\n"
+
+                    # Create Transaction with plain-text items
+                    Transaction.objects.create(
+                        order_number=order.order_number,
+                        user=order.user,
+                        total_price=order.total_amount,
+                        date_of_order=order.order_date,
+                        items=item_summary.strip()
+                    )
+
+                    order.delete()
+
+                success = "Order updated and moved to transactions."
+                order = None
+            except Order.DoesNotExist:
+                error = "Order not found."
+
+    return render(request, 'editOrder.html', {'order': order, 'error': error, 'success': success})
+
+
+def delete_order(request):
+    if request.method == 'POST':
+        order_number = request.POST.get('order_number')
+        
+        try:
+            order = Order.objects.get(order_number=order_number)
+            order.delete()
+            messages.success(request, f"Order {order_number} has been successfully deleted.")
+            return redirect('adminOrder')
+        except Order.DoesNotExist:
+            messages.error(request, f"Order {order_number} does not exist.")
+    
+    return render(request, 'deleteOrder.html')
+
+@staff_member_required
+def adminTransaction(request):
+    transactions = Transaction.objects.all().order_by('-date_of_order')
+    return render(request, 'adminTransaction.html', {'transactions': transactions})
+
+
+@staff_member_required
+def adminUser(request):
+    users = User.objects.all()
+    return render(request, 'adminUser.html', {'users': users})
+
+
+def add_user(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            
+            user = form.save(commit=False)
+            password = form.cleaned_data['password']
+            user.set_password(password)
+
+            user_status = form.cleaned_data['user_status']
+            if user_status == 'staff':
+                user.is_staff = True
+
+            user.save()
+
+            Profile.objects.create(
+                user=user,
+                phone_number=form.cleaned_data['phone_number'],
+                user_status=user_status,
+            )
+            return redirect('adminUser')
+    else:
+        form = RegisterForm()
+
+    return render(request, 'add_user.html', {'form': form})
+
+
+
+def edit_user(request):
+    if request.method == 'POST':
+        user_id = request.POST['user_id']
+        user = get_object_or_404(User, id=user_id)
+        
+        user.first_name = request.POST['first_name']
+        user.last_name = request.POST['last_name']
+        user.email = request.POST['email']
+        user.save()
+        return redirect('adminUser')
+    
+    return render(request, 'edit_user.html')
+
+
+def delete_user(request):
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+
+        try:
+            user = User.objects.get(first_name=first_name, last_name=last_name)
+            user.delete()
+        except User.DoesNotExist:
+            return HttpResponseForbidden("User not found")
+        return redirect('adminUser')
+
+    return render(request, 'delete_user.html')

@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>School Supplies</title>
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logo-search">
+          <a href="{% url 'dashboard' %}">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+          </a>
+          <form method="GET" action="{% url 'dashboard' %}">
+            <input type="text" name="q" placeholder="Search" class="search-box" value="{{ query|default:'' }}">
+          </form>
+        </div>
+        <nav class="navbar">
+          <div class="notification-dropdown">
+            <a href="#" class="notification-link">Notification</a>
+            <div class="notification-content">
+              {% if ready_orders %}
+                {% for order in ready_orders %}
+                  <div class="notification-item">
+                    <strong>Order #{{ order.order_number }}</strong><br>
+                    Pickup Date: {{ order.pickup_date|default:"N/A" }}
+                  </div>
+                {% endfor %}
+              {% else %}
+                <div class="notification-item">No orders ready for pickup.</div>
+              {% endif %}
+            </div>
+          </div>
+            <a href="{% url 'cart' %}">Cart</a>
+            <a href="{% url 'wishlist' %}" class="active">Wishlists</a>
+            <a href="{% url 'orderHistory' %}">Order History</a>
+            <a href="{% url 'dashboard' %}" class="home-btn">HOME</a>
+            <form method="POST" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </nav>
+    </header>
+
+  <main>
+    <div class="filters">
+      <button class="filter-btn">BEST SELLER</button>
+      <button class="filter-btn">TRENDING</button>
+    </div>
+
+    <section class="product-grid">
+      {% for product in products %}
+      <a href="{% url 'view_order' product.id %}">
+        <div class="product-card">
+          <div class="image-placeholder"></div>
+          <p class="product-name">{{ product.name }}</p>
+          <p class="product-price">₱{{ product.price }}</p>
+        </div>
+      </a>
+      {% empty %}
+        <p>No products available.</p>
+      {% endfor %}
+    </section>
+  </main>
+</body>
+</html>
