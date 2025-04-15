@@ -32,11 +32,13 @@
             <a href="{% url 'add_user' %}" class="Controls-btn">Add</a>
             <a href="{% url 'delete_user' %}" class="Controls-btn">Delete</a>
             <a href="{% url 'edit_user' %}" class="Controls-btn">Edit</a>
+            <a href="{% url 'user_action_log' %}" class="Controls-btn">Logs</a>
         </div>
         <div class="container">
             <table>
                 <thead>
                     <tr>
+                        <th>User Id</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone Number</th>
@@ -46,6 +48,7 @@
                 <tbody>
                     {% for user in users %}
                     <tr>
+                        <td>{{ user.id }}</td>
                         <td>{{ user.first_name.title }} {{ user.last_name.title }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.profile.phone_number }}</td>

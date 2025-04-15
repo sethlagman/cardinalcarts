@@ -30,4 +30,7 @@ urlpatterns = [
     path('admin/edit/', views.edit_user, name='edit_user'),
     path('orderhistory', views.orderHistory, name='orderHistory'),
     path('vieworder', views.viewOrder, name='viewOrder'),
+    path('userlog/', views.user_log, name='user_action_log'),
+    path('orderlog/', views.order_action_log, name='order_action_log'),
+    path('productlog/', views.product_action_log, name='product_action_log'),
 ]

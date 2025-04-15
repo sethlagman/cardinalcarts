@@ -44,7 +44,6 @@
   </header>
 
   <main>
-    <!-- Only show the wishlist container if there are items in the wishlist -->
     {% if wishlist_items %}
       <form method="POST" action="{% url 'remove_from_wishlist' %}">
         {% csrf_token %}

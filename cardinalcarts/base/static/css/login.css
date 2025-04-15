@@ -42,7 +42,6 @@ body {
   object-fit: contain;
 }
 
-
 .navbar h1 {
   font-size: 28px;
   margin-left: 15px;
@@ -87,7 +86,6 @@ body {
   font-size: 16px;
   line-height: 1.6;
   text-align: justify;
-
 }
 
 .login-box {
@@ -114,8 +112,6 @@ body {
   font-weight: normal;
   transition: color 0.3s ease;
 }
-
-
 
 .tabs span {
   font-size: 18px;

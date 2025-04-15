@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Action Logs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/user_action_log.css' %}">
+</head>
+<body>
+
+<div class="container">
+    <h2>User Action Logs</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Action Type</th>
+                <th>Admin User</th>
+                <th>Timestamp</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+                <tr>
+                    <td class="action-type">{{ log.get_action_type_display }}</td>
+                    <td class="admin-user">{{ log.admin_user.get_full_name }}</td>
+                    <td class="timestamp">{{ log.timestamp }}</td>
+                    <td class="details">{{ log.details }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'adminUser' %}" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to Users
+    </a>
+</div>
+
+</body>
+</html>

@@ -44,7 +44,7 @@
       </form>
   
       {% if order %}
-      <!-- Update Form -->
+      
       <form method="POST" class="form-box">
           {% csrf_token %}
           <input type="hidden" name="order_number" value="{{ order.order_number }}">
@@ -65,8 +65,7 @@
           </div>
       </form>
       {% endif %}
-  
-      <!-- Feedback Messages -->
+
       {% if success %}
           <p class="message success">{{ success }}</p>
       {% endif %}

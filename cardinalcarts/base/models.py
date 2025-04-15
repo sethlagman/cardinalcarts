@@ -83,3 +83,49 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"Transaction {self.order_number}"
+
+class UserActionLog(models.Model):
+    ACTION_CHOICES = [
+        ('add', 'Add'),
+        ('edit', 'Edit'),
+        ('delete', 'Delete'),
+    ]
+
+    action_type = models.CharField(max_length=10, choices=ACTION_CHOICES)
+    admin_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='action_logs')
+    timestamp = models.DateTimeField(auto_now_add=True)
+    details = models.TextField()
+
+    def __str__(self):
+        return f"{self.action_type.capitalize()} action on {self.target_user.get_full_name()} by {self.admin_user.get_full_name()}"
+    
+class OrderActionLog(models.Model):
+    ACTION_CHOICES = [
+        ('add', 'Add'),
+        ('edit', 'Edit'),
+        ('delete', 'Delete'),
+    ]
+
+    action_type = models.CharField(max_length=10, choices=ACTION_CHOICES)
+    admin_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='order_action_logs')
+    timestamp = models.DateTimeField(auto_now_add=True)
+    details = models.TextField()
+
+    def __str__(self):
+        return f"{self.action_type.capitalize()} action on Order #{self.order.order_number} by {self.admin_user.get_full_name()}"
+    
+class ProductActionLog(models.Model):
+    ACTION_CHOICES = [
+        ('add', 'Add'),
+        ('edit', 'Edit'),
+        ('delete', 'Delete'),
+    ]
+    
+    admin = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    product_name = models.CharField(max_length=255)
+    action = models.CharField(max_length=10, choices=ACTION_CHOICES)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    details = models.TextField()
+
+    def __str__(self):
+        return f"{self.product_name} - {self.action} by {self.admin}"
