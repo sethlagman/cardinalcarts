@@ -2,6 +2,8 @@
 
 CardinalCart is a web application that we proposed and developed to make purchasing school materials and university merchandise at Mapúa University simpler and more convenient for students, faculty, and staff. Built with Python, Django, and PostgreSQL, this platform aims to provide a seamless online shopping experience tailored to the Mapúa community.
 
+![Description of the image](https://raw.githubusercontent.com/sethlagman/cardinalcarts/main/logo.png)
+
 ## Features
 
 - **Easy Browsing**: Browse a wide variety of school materials, merchandise, and other university essentials.
