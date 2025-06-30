@@ -106,11 +106,17 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
+            
+            user.username = user.username.lower()
+            user.first_name = user.first_name.lower()
+            user.last_name = user.last_name.lower()
+
             user.set_password(form.cleaned_data['password'])
             user.is_active = False  # 👈 prevent login until verified
 
             if form.cleaned_data['user_status'] == 'staff':
                 user.is_staff = True
+
             user.save()
 
             Profile.objects.create(
@@ -121,7 +127,7 @@ def register(request):
 
             send_verification_email(request, user)
 
-            return render(request, 'verification_sent.html')  # Create this page
+            return render(request, 'verification_sent.html')
     else:
         form = RegisterForm()
     
@@ -603,6 +609,10 @@ def add_user(request):
             user = form.save(commit=False)
             password = form.cleaned_data['password']
             user.set_password(password)
+
+            user.username = user.username.lower()
+            user.first_name = user.first_name.lower()
+            user.last_name = user.last_name.lower()
 
             user_status = form.cleaned_data['user_status']
             if user_status == 'staff':

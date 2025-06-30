@@ -3,6 +3,11 @@ from django.contrib.auth.models import User
 from .models import Profile, Product
 import re
 
+from django import forms
+from django.contrib.auth.models import User
+from base.models import Profile
+import re
+
 class RegisterForm(forms.ModelForm):
     phone_number = forms.CharField(max_length=15)
     password = forms.CharField(widget=forms.PasswordInput)
@@ -13,19 +18,23 @@ class RegisterForm(forms.ModelForm):
         fields = ['first_name', 'last_name', 'username', 'email', 'phone_number', 'user_status', 'password']
 
     def clean_first_name(self):
-        first_name = self.cleaned_data['first_name'].strip()
+        first_name = self.cleaned_data['first_name'].strip().lower()
         if len(first_name) < 2:
-            raise forms.ValidationError("First name must be at least 2 characters long.")
+            raise forms.ValidationError("First name must be at least 2 characters.")
+        if not first_name.isalpha():
+            raise forms.ValidationError("First name must contain only alphabetic characters with no spaces.")
         return first_name
 
     def clean_last_name(self):
-        last_name = self.cleaned_data['last_name'].strip()
+        last_name = self.cleaned_data['last_name'].strip().lower()
         if len(last_name) < 2:
-            raise forms.ValidationError("Last name must be at least 2 characters long.")
+            raise forms.ValidationError("Last name must be at least 2 characters.")
+        if not last_name.isalpha():
+            raise forms.ValidationError("Last name must contain only alphabetic characters with no spaces.")
         return last_name
 
     def clean_username(self):
-        username = self.cleaned_data['username'].strip()
+        username = self.cleaned_data['username'].strip().lower()
         if len(username) < 2:
             raise forms.ValidationError("Username must be at least 2 characters long.")
         if User.objects.filter(username=username).exists():
@@ -50,7 +59,7 @@ class RegisterForm(forms.ModelForm):
             raise forms.ValidationError("Password must contain at least one lowercase letter.")
         if not re.search(r'\d', password):
             raise forms.ValidationError("Password must contain at least one digit.")
-        if not re.search(r'[!@#$%^&*()_+=-]', password):
+        if not re.search(r'[!@#$%^&*()_+=\-]', password):
             raise forms.ValidationError("Password must contain at least one special character (!@#$%^&*()_+=-).")
         return password
 
