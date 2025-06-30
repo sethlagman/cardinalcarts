@@ -8,7 +8,6 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseForbidden
-import random
 from django.contrib import messages
 from django.db.models import Q
 from django.utils import timezone
@@ -19,6 +18,9 @@ from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
 from django.urls import reverse
 from django.views.decorators.http import require_GET
+from django.http import HttpResponse
+import csv
+import random
 
 MAX_ATTEMPTS = 5
 LOCKOUT_TIME = 300
@@ -730,6 +732,7 @@ def delete_order_by_id(request, order_id):
         messages.error(request, "Order not found.")
     return redirect('adminOrder')
 
+
 @staff_member_required
 @require_GET
 def edit_order_redirect(request):
@@ -737,3 +740,31 @@ def edit_order_redirect(request):
     return render(request, 'editOrder.html', {
         'order': Order.objects.filter(order_number=order_number).first()
     })
+
+
+@staff_member_required
+def inventory_visualization(request):
+    products = Product.objects.all()
+    product_names = [product.name for product in products]
+    quantities = [product.quantity for product in products]
+
+    return render(request, 'inventory_visualization.html', {
+        'product_names': product_names,
+        'quantities': quantities,
+    })
+
+
+@staff_member_required
+def download_inventory_report(request):
+    products = Product.objects.all()
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="inventory_report.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Product Name', 'Description', 'Price', 'Quantity'])
+
+    for product in products:
+        writer.writerow([product.name, product.description, product.price, product.quantity])
+
+    return response

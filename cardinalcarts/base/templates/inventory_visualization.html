@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory Visualization</title>
+    <link rel="stylesheet" href="{% static 'css/inventory_visualization.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logoimg">
+            <a href="{% url 'dashboard' %}">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo">
+            </a>
+            <h1>ADMIN</h1>
+        </div>
+        <nav class="navbar">
+            <a href="{% url 'inventory_visualization' %}" class="active">Report</a>
+            <a href="{% url 'adminTransaction' %}">Transactions</a>
+            <a href="{% url 'adminUser' %}">User</a>
+            <a href="{% url 'adminInventory' %}">Inventory</a>
+            <a href="{% url 'adminOrder' %}">Orders</a>
+            <a href="{% url 'dashboard' %}" class="home-btn">HOME</a>
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </nav>
+    </header>
+    <main class="content">
+        <br>
+        <br>
+        <div class="chart-container">
+            <canvas id="inventoryChart"></canvas>
+        </div>
+        <div class="report-download">
+            <form action="{% url 'download_inventory_report' %}" method="GET">
+                <button type="submit" class="download-btn">Download Report (CSV)</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const labels = {{ product_names|safe }};
+        const data = {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Available Stock',
+                    data: {{ quantities|safe }},
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }
+            ]
+        };
+
+        const config = {
+            type: 'bar',
+            data: data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+        new Chart(
+            document.getElementById('inventoryChart'),
+            config
+        );
+    </script>
+</body>
+</html>
