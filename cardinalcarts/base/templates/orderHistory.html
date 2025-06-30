@@ -23,7 +23,7 @@
             {% for order in ready_orders %}
               <div class="notification-item">
                 <strong>Order #{{ order.order_number }}</strong><br>
-                Pickup Date: {{ order.pickup_date|default:"N/A" }}
+                Pickup Date: {{ order.pickup_date|default:"Pending" }}
               </div>
             {% endfor %}
           {% else %}
@@ -80,7 +80,7 @@
             {% if order.pickup_date %}
               {{ order.pickup_date|date:"M d, Y" }}
             {% else %}
-              N/A
+              Pending
             {% endif %}
           </td>
           <td>₱{{ order.total_price|floatformat:2 }}</td>
