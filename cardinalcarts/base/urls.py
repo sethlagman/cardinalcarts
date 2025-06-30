@@ -38,4 +38,5 @@ urlpatterns = [
     path('inventory/visualization/', views.inventory_visualization, name='inventory_visualization'),
     path('inventory/visualization/download/', views.download_inventory_report, name='download_inventory_report'),
     path('transactions/visualization/download/', views.download_transactions_report, name='download_transactions_report'),
+    path('admin/user/delete/<int:user_id>/', views.delete_user_by_id, name='delete_user_by_id'),
 ]

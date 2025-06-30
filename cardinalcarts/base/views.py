@@ -18,7 +18,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
 from django.urls import reverse
 from django.views.decorators.http import require_GET
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 import csv
 import random
 
@@ -501,9 +501,8 @@ def edit_order(request):
     order = None
     error = None
     success = None
-    order_number_from_get = request.GET.get("order_number")  # NEW: for template pre-fill fallback
+    order_number_from_get = request.GET.get("order_number")
 
-    # GET logic: if ?order_number=XXXX is passed, auto-search
     if request.method == "GET" and order_number_from_get:
         try:
             order = Order.objects.get(order_number=order_number_from_get)
@@ -552,9 +551,9 @@ def edit_order(request):
                     )
 
                     order.delete()
+                    
+                return redirect('adminOrder')
 
-                success = "Order updated"
-                order = None
             except Order.DoesNotExist:
                 error = "Order not found"
 
@@ -562,7 +561,7 @@ def edit_order(request):
         'order': order,
         'error': error,
         'success': success,
-        'order_number_from_get': order_number_from_get  # NEW: pass this to safely pre-fill form
+        'order_number_from_get': order_number_from_get
     })
 
 
@@ -795,3 +794,22 @@ def download_transactions_report(request):
         writer.writerow([txn.order_number, txn.user.username, txn.items, txn.date_of_order, txn.total_price])
 
     return response
+
+
+@staff_member_required
+def delete_user_by_id(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        if user.is_superuser:
+            return HttpResponseForbidden("Cannot delete superuser.")
+        full_name = user.get_full_name()
+        user.delete()
+
+        UserActionLog.objects.create(
+            action_type='delete',
+            admin_user=request.user,
+            details=f"Deleted user {full_name}"
+        )
+        return redirect('adminUser')
+    except User.DoesNotExist:
+        return HttpResponseNotFound("User not found.")
