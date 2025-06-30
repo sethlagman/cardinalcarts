@@ -166,3 +166,8 @@ header h1 {
   border-radius: 8px;
   border: 1px solid #d33;
 }
+
+.error-messages li.error {
+  color: #cc0000;
+  margin: 6px;
+}

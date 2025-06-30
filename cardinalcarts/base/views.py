@@ -12,7 +12,7 @@ import random
 from django.contrib import messages
 from django.db.models import Q
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 MAX_ATTEMPTS = 5
 LOCKOUT_TIME = 300
@@ -336,12 +336,41 @@ def adminOrder(request):
 @staff_member_required
 def add_order(request):
     if request.method == 'POST':
-        # Get form data
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
         status = request.POST.get('status')
+        quantities = request.POST.getlist('quantities')
         payment_method = request.POST.get('payment_method')
         pickup_date = request.POST.get('pickup_date')
+
+        errors = []
+
+        if len(first_name) < 2 or first_name.isspace():
+            errors.append("First name must be at least 2 characters and not just spaces.")
+
+        if len(last_name) < 2 or last_name.isspace():
+            errors.append("Last name must be at least 2 characters and not just spaces.")
+
+        for quantity in quantities:
+            try:
+                q = int(quantity)
+                if q <= 0:
+                    errors.append("Quantities must be positive integers.")
+            except ValueError:
+                errors.append("Quantities must be valid numbers.")
+
+        if pickup_date:
+            pickup = datetime.strptime(pickup_date, '%Y-%m-%d').date()
+            if pickup < datetime.today().date():
+                errors.append("Pickup date cannot be in the past.")
+
+        if errors:
+            order_number = f"{random.randint(10000000, 99999999)}"
+            return render(request, 'addOrder.html', {
+                'errors': errors,
+                'order_number': order_number,
+                'products': Product.objects.all()
+            })
 
         user = User.objects.filter(first_name=first_name, last_name=last_name).first()
 

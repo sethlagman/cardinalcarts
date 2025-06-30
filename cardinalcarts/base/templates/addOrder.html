@@ -129,6 +129,54 @@
           </form>
         </div>
       </main>
+
+      <script>
+        document.querySelector('.order-form').addEventListener('submit', function(event) {
+          const firstName = document.getElementById('first_name').value.trim();
+          const lastName = document.getElementById('last_name').value.trim();
+          const quantityField = document.getElementById('quantities');
+          const quantity = parseInt(quantityField.value, 10);
+          const pickupDate = document.getElementById('pickup_date').value;
+          const today = new Date().toISOString().split('T')[0];
+
+          const errors = [];
+
+          if (firstName.length < 2 || /^[\s]+$/.test(firstName)) {
+            errors.push("First name must be at least 2 characters and not just spaces.");
+          }
+
+          if (lastName.length < 2 || /^[\s]+$/.test(lastName)) {
+            errors.push("Last name must be at least 2 characters and not just spaces.");
+          }
+
+          if (isNaN(quantity) || quantity <= 0) {
+            errors.push("Quantity must be a positive number.");
+          }
+
+          if (pickupDate && pickupDate < today) {
+            errors.push("Pickup date cannot be in the past.");
+          }
+
+          if (errors.length > 0) {
+            event.preventDefault(); // Stop form submission
+
+            const errorList = document.createElement('ul');
+            errorList.classList.add('error-messages');
+
+            errors.forEach(error => {
+              const li = document.createElement('li');
+              li.className = 'error';
+              li.innerText = error;
+              errorList.appendChild(li);
+            });
+
+            const existingErrors = document.querySelector('.error-messages');
+            if (existingErrors) existingErrors.remove();
+
+            document.querySelector('.order-form').insertAdjacentElement('beforebegin', errorList);
+          }
+        });
+      </script>
       
 </body>
 </html>
