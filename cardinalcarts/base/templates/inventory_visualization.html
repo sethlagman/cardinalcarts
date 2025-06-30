@@ -1,17 +1,43 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-{% load static %}
 <head>
-    <meta charset="UTF-8">
-    <title>Inventory Visualization</title>
-    <link rel="stylesheet" href="{% static 'css/inventory_visualization.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <title>Inventory & Transaction Insights</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="{% static 'css/adminInventory.css' %}">
+  <style>
+    .chart-box {
+        max-width: 700px;
+        margin: 30px auto;
+        background: #fff;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    .chart-box h3 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .download-btn {
+        display: inline-block;
+        background-color: crimson;
+        color: white;
+        padding: 10px 20px;
+        margin: 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+  </style>
 </head>
 <body>
     <header>
         <div class="logoimg">
             <a href="{% url 'dashboard' %}">
-                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
             </a>
             <h1>ADMIN</h1>
         </div>
@@ -28,50 +54,51 @@
             </form>
         </nav>
     </header>
-    <main class="content">
-        <br>
-        <br>
-        <div class="chart-container">
+
+    <main>
+        <div class="chart-box">
+            <h3>Current Inventory Levels</h3>
             <canvas id="inventoryChart"></canvas>
+            <a href="{% url 'download_inventory_report' %}" class="download-btn">Download Inventory CSV</a>
         </div>
-        <div class="report-download">
-            <form action="{% url 'download_inventory_report' %}" method="GET">
-                <button type="submit" class="download-btn">Download Report (CSV)</button>
-            </form>
+
+        <div class="chart-box">
+            <h3>Top Selling Products</h3>
+            <canvas id="transactionChart"></canvas>
+            <a href="{% url 'download_transactions_report' %}" class="download-btn">Download Transactions CSV</a>
         </div>
     </main>
 
     <script>
-        const labels = {{ product_names|safe }};
-        const data = {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Available Stock',
-                    data: {{ quantities|safe }},
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }
-            ]
-        };
+      const inventoryCtx = document.getElementById('inventoryChart').getContext('2d');
+      new Chart(inventoryCtx, {
+          type: 'bar',
+          data: {
+              labels: {{ product_names|safe }},
+              datasets: [{
+                  label: 'Stock Quantity',
+                  data: {{ product_quantities|safe }},
+                  backgroundColor: 'rgba(0, 123, 255, 0.6)',
+                  borderColor: 'rgba(0, 123, 255, 1)',
+                  borderWidth: 1
+              }]
+          }
+      });
 
-        const config = {
-            type: 'bar',
-            data: data,
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        };
-
-        new Chart(
-            document.getElementById('inventoryChart'),
-            config
-        );
+      const txnCtx = document.getElementById('transactionChart').getContext('2d');
+      new Chart(txnCtx, {
+          type: 'bar',
+          data: {
+              labels: {{ top_selling_names|safe }},
+              datasets: [{
+                  label: 'Units Sold',
+                  data: {{ top_selling_quantities|safe }},
+                  backgroundColor: 'rgba(40, 167, 69, 0.6)',
+                  borderColor: 'rgba(40, 167, 69, 1)',
+                  borderWidth: 1
+              }]
+          }
+      });
     </script>
 </body>
 </html>

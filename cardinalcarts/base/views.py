@@ -734,37 +734,64 @@ def delete_order_by_id(request, order_id):
 
 
 @staff_member_required
-@require_GET
-def edit_order_redirect(request):
-    order_number = request.GET.get('order_number')
-    return render(request, 'editOrder.html', {
-        'order': Order.objects.filter(order_number=order_number).first()
-    })
-
-
-@staff_member_required
 def inventory_visualization(request):
+    # Inventory stats
     products = Product.objects.all()
-    product_names = [product.name for product in products]
-    quantities = [product.quantity for product in products]
 
-    return render(request, 'inventory_visualization.html', {
+    product_names = [p.name for p in products]
+    product_quantities = [p.quantity for p in products]
+    product_prices = [float(p.price) for p in products]
+
+    # Transaction stats
+    transactions = Transaction.objects.all()
+    sales_data = {}
+
+    for txn in transactions:
+        for line in txn.items.split("\n"):
+            if not line.strip():
+                continue
+            try:
+                name_part = line.split(" (x")[0].strip()
+                qty_part = int(line.split("x")[1].split(")")[0])
+                sales_data[name_part] = sales_data.get(name_part, 0) + qty_part
+            except:
+                continue
+
+    top_selling_names = list(sales_data.keys())
+    top_selling_quantities = list(sales_data.values())
+
+    context = {
         'product_names': product_names,
-        'quantities': quantities,
-    })
+        'product_quantities': product_quantities,
+        'product_prices': product_prices,
+        'top_selling_names': top_selling_names,
+        'top_selling_quantities': top_selling_quantities,
+    }
 
+    return render(request, 'inventory_visualization.html', context)
 
 @staff_member_required
 def download_inventory_report(request):
     products = Product.objects.all()
-
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="inventory_report.csv"'
 
     writer = csv.writer(response)
     writer.writerow(['Product Name', 'Description', 'Price', 'Quantity'])
+    for p in products:
+        writer.writerow([p.name, p.description, p.price, p.quantity])
 
-    for product in products:
-        writer.writerow([product.name, product.description, product.price, product.quantity])
+    return response
+
+@staff_member_required
+def download_transactions_report(request):
+    transactions = Transaction.objects.all()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="transaction_report.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Order Number', 'User', 'Items', 'Date of Order', 'Total Price'])
+    for txn in transactions:
+        writer.writerow([txn.order_number, txn.user.username, txn.items, txn.date_of_order, txn.total_price])
 
     return response

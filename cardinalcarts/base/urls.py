@@ -35,7 +35,7 @@ urlpatterns = [
     path('productlog/', views.product_action_log, name='product_action_log'),
     path('verify-email/<uidb64>/<token>/', views.verify_email, name='verify_email'),
     path('admin/orders/delete/<int:order_id>/', views.delete_order_by_id, name='delete_order_by_id'),
-    path('admin/order/edit/redirect/', views.edit_order_redirect, name='edit_order_redirect'),
     path('inventory/visualization/', views.inventory_visualization, name='inventory_visualization'),
     path('inventory/visualization/download/', views.download_inventory_report, name='download_inventory_report'),
+    path('transactions/visualization/download/', views.download_transactions_report, name='download_transactions_report'),
 ]
