@@ -17,7 +17,6 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
 from django.urls import reverse
-from django.views.decorators.http import require_GET
 from django.http import HttpResponse, HttpResponseNotFound
 import csv
 import random
@@ -144,13 +143,22 @@ def logout_view(request):
 @login_required
 def dashboard(request):
     query = request.GET.get('q', '')
-    products = Product.objects.filter(name__icontains=query) if query else Product.objects.all()
     ready_orders = Order.objects.filter(status="Ready for Pickup", user=request.user)
+
     if query:
-        products = Product.objects.filter(Q(name__icontains=query) | Q(description__icontains=query))
+        products = Product.objects.filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query) |
+            Q(category__icontains=query)
+        )
     else:
         products = Product.objects.all()
-    return render(request, 'dashboard.html', {'products': products, 'query': query, 'ready_orders': ready_orders})
+
+    return render(request, 'dashboard.html', {
+        'products': products,
+        'query': query,
+        'ready_orders': ready_orders
+    })
 
 
 @login_required

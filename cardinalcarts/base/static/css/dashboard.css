@@ -136,6 +136,7 @@ header {
 .product-price {
   color: #000;
   text-decoration: none;
+  margin-top: 5px;
 }
 
 .product-grid a {
@@ -184,4 +185,16 @@ header {
 
 .notification-item:last-child {
   border-bottom: none;
+}
+
+.category-pill {
+  display: inline-block;
+  background-color: #007BFF;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: capitalize;
+  margin-top: 9px;
 }

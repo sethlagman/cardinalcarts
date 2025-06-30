@@ -66,4 +66,7 @@ class RegisterForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'price', 'quantity', 'description']
+        fields = ['name', 'description', 'category', 'price', 'quantity']
+        widgets = {
+            'category': forms.TextInput(attrs={})
+        }
