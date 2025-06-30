@@ -642,10 +642,20 @@ def add_user(request):
 
 @staff_member_required
 def edit_user(request):
-    if request.method == 'POST':
+    user = None
+
+    if request.method == 'GET':
+        user_id = request.GET.get('user_id')
+        if user_id:
+            user = get_object_or_404(User, id=user_id)
+            return render(request, 'edit_user.html', {
+                'user': user,
+            })
+
+    elif request.method == 'POST':
         user_id = request.POST['user_id']
         user = get_object_or_404(User, id=user_id)
-        
+
         old_data = {
             'first_name': user.first_name,
             'last_name': user.last_name,
@@ -664,7 +674,7 @@ def edit_user(request):
         )
 
         return redirect('adminUser')
-    
+
     return render(request, 'edit_user.html')
 
 

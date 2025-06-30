@@ -33,17 +33,18 @@
             <h2>Edit User</h2>
             <form method="post">
                 {% csrf_token %}
+
                 <label for="user_id">User ID</label>
-                <input type="number" name="user_id" placeholder="User ID" required>
+                <input type="number" name="user_id" placeholder="User ID" value="{{ user.id }}" required>
 
                 <label for="first_name">First Name</label>
-                <input type="text" name="first_name" placeholder="New First Name">
+                <input type="text" name="first_name" placeholder="New First Name" value="{{ user.first_name|default:'' }}">
 
                 <label for="last_name">Last Name</label>
-                <input type="text" name="last_name" placeholder="New Last Name">
+                <input type="text" name="last_name" placeholder="New Last Name" value="{{ user.last_name|default:'' }}">
 
                 <label for="email">Email</label>
-                <input type="email" name="email" placeholder="New Email">
+                <input type="email" name="email" placeholder="New Email" value="{{ user.email|default:'' }}">
 
                 <button type="submit" class="submit-btn">Save Changes</button>
             </form>
