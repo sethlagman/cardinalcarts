@@ -18,6 +18,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
 from django.urls import reverse
+from django.views.decorators.http import require_GET
 
 MAX_ATTEMPTS = 5
 LOCKOUT_TIME = 300
@@ -492,8 +493,17 @@ def edit_order(request):
     order = None
     error = None
     success = None
+    order_number_from_get = request.GET.get("order_number")  # NEW: for template pre-fill fallback
 
-    if request.method == "POST":
+    # GET logic: if ?order_number=XXXX is passed, auto-search
+    if request.method == "GET" and order_number_from_get:
+        try:
+            order = Order.objects.get(order_number=order_number_from_get)
+            order.total_amount = sum(item.product.price * item.quantity for item in order.items.all())
+        except Order.DoesNotExist:
+            error = "Order not found."
+
+    elif request.method == "POST":
         submit_btn = request.POST.get("submit_btn")
 
         if submit_btn == "Search Order":
@@ -521,7 +531,6 @@ def edit_order(request):
                 )
 
                 if status == "Completed":
-
                     item_summary = ""
                     for item in order.items.all():
                         item_summary += f"{item.product.name} (x{item.quantity}) - ₱{item.price}\n"
@@ -536,12 +545,18 @@ def edit_order(request):
 
                     order.delete()
 
-                success = "Order updated and moved to transactions."
+                success = "Order updated"
                 order = None
             except Order.DoesNotExist:
-                error = "Order not found."
+                error = "Order not found"
 
-    return render(request, 'editOrder.html', {'order': order, 'error': error, 'success': success})
+    return render(request, 'editOrder.html', {
+        'order': order,
+        'error': error,
+        'success': success,
+        'order_number_from_get': order_number_from_get  # NEW: pass this to safely pre-fill form
+    })
+
 
 
 @staff_member_required
@@ -684,3 +699,31 @@ def product_action_log(request):
 
     logs = ProductActionLog.objects.all().order_by('-timestamp')
     return render(request, 'product_action_log.html', {'logs': logs})
+
+
+@staff_member_required
+@require_POST
+def delete_order_by_id(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        
+        # Optionally, log this action
+        OrderActionLog.objects.create(
+            action_type='delete',
+            admin_user=request.user,
+            details=f"Deleted order #{order.order_number}"
+        )
+
+        order.delete()
+        messages.success(request, f"Order #{order.order_number} deleted successfully.")
+    except Order.DoesNotExist:
+        messages.error(request, "Order not found.")
+    return redirect('adminOrder')
+
+@staff_member_required
+@require_GET
+def edit_order_redirect(request):
+    order_number = request.GET.get('order_number')
+    return render(request, 'editOrder.html', {
+        'order': Order.objects.filter(order_number=order_number).first()
+    })

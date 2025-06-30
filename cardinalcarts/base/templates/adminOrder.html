@@ -47,36 +47,48 @@
         <div class="container">
             <table>
                 <thead>
-                    <tr>
-                        <th>Items</th>
-                        <th>Order Number</th>
-                        <th>Recipient</th>
-                        <th>Amount to be Paid</th>
-                        <th>Status</th>
-                        <th>Pickup Date</th>
-                    </tr>
+                <tr>
+                    <th>Items</th>
+                    <th>Order Number</th>
+                    <th>Recipient</th>
+                    <th>Amount to be Paid</th>
+                    <th>Status</th>
+                    <th>Pickup Date</th>
+                    <th>Actions</th>  <!-- Add this -->
+                </tr>
                 </thead>
                 <tbody>
-                    {% for order in orders %}
-                    <tr>
-                        <td>
-                            {% for item in order.items.all %}
-                                {{ item.product.name }} ({{ item.quantity }})<br>
-                            {% endfor %}
-                        </td>
-                        <td>{{ order.order_number }}</td>
-                        <td>{{ order.user.get_full_name }}</td>
-                        <td>₱{{ order.total_price|floatformat:2 }}</td>
-                        <td>{{ order.status|capfirst }}</td>
-                        <td>
-                            {% if order.pickup_date %}
-                                {{ order.pickup_date }}
-                            {% else %}
-                                Pending
-                            {% endif %}
-                        </td>
-                    </tr>
+                {% for order in orders %}
+                <tr>
+                    <td>
+                    {% for item in order.items.all %}
+                        {{ item.product.name }} ({{ item.quantity }})<br>
                     {% endfor %}
+                    </td>
+                    <td>{{ order.order_number }}</td>
+                    <td>{{ order.user.get_full_name }}</td>
+                    <td>₱{{ order.total_price|floatformat:2 }}</td>
+                    <td>{{ order.status|capfirst }}</td>
+                    <td>
+                    {% if order.pickup_date %}
+                        {{ order.pickup_date }}
+                    {% else %}
+                        Pending
+                    {% endif %}
+                    </td>
+                    <td>
+                        <form method="GET" action="{% url 'edit_order' %}" style="display:inline;">
+                            <input type="hidden" name="order_number" value="{{ order.order_number }}">
+                            <button type="submit" class="edit-btn">Edit</button>
+                        </form>
+                        
+                        <form method="POST" action="{% url 'delete_order_by_id' order.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="delete-btn" onclick="return confirm('Delete order {{ order.order_number }}?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>
