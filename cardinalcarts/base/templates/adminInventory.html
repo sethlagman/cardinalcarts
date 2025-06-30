@@ -39,7 +39,14 @@
                 <div class="image-placeholder"></div>
                 <p class="product-name">{{ product.name }}</p>
                 <p class="product-price">₱{{ product.price }}</p>
-                <p class="product-quantity">{{ product.quantity }} Pcs.</p>
+                <p class="product-quantity">
+                    {{ product.quantity }} Pcs.
+                    {% if product.quantity == 0 %}
+                        <span class="stock-status out">Out of Stock</span>
+                    {% elif product.quantity < 20 %}
+                        <span class="stock-status low">Running Low</span>
+                    {% endif %}
+                </p>
                 <a href="{% url 'edit_product' product.id %}" class="edit-btn">Edit</a>
                 <form action="{% url 'delete_product' product.id %}" method="POST" class="delete-form">
                     {% csrf_token %}

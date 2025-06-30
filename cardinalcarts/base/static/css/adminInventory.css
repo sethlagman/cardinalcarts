@@ -181,3 +181,24 @@ background-color: #e53935;
 .delete-btn:active {
 background-color: #d32f2f;
 }
+
+.stock-status {
+  display: inline-block;
+  margin-left: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.stock-status.low {
+  color: #856404;
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+}
+
+.stock-status.out {
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+}
