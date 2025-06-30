@@ -49,7 +49,7 @@
                     {% for user in users %}
                     <tr>
                         <td>{{ user.id }}</td>
-                        <td>{{ user.first_name.title }} {{ user.last_name.title }}</td>
+                        <td>{{ user.first_name }} {{ user.last_name }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.profile.phone_number }}</td>
                         <td>{{ user.profile.user_status.title }}</td>
