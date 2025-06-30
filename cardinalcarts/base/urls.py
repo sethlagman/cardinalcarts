@@ -33,4 +33,5 @@ urlpatterns = [
     path('userlog/', views.user_log, name='user_action_log'),
     path('orderlog/', views.order_action_log, name='order_action_log'),
     path('productlog/', views.product_action_log, name='product_action_log'),
+    path('verify-email/<uidb64>/<token>/', views.verify_email, name='verify_email'),
 ]

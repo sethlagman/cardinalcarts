@@ -13,9 +13,43 @@ from django.contrib import messages
 from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta, datetime
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
+from django.urls import reverse
 
 MAX_ATTEMPTS = 5
 LOCKOUT_TIME = 300
+
+def verify_email(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (User.DoesNotExist, ValueError, TypeError, OverflowError):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        auth_login(request, user)
+        return redirect('dashboard')
+    else:
+        return render(request, 'verification_failed.html')
+
+def send_verification_email(request, user):
+    token = default_token_generator.make_token(user)
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    verification_url = request.build_absolute_uri(
+        reverse('verify_email', kwargs={'uidb64': uid, 'token': token})
+    )
+
+    send_mail(
+        subject='Verify Your Email - CardinalCarts',
+        message=f'Hi {user.first_name},\n\nClick the link below to verify your account:\n\n{verification_url}\n\nThank you!',
+        from_email='noreply@cardinalcarts.com',
+        recipient_list=[user.email],
+    )
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -70,26 +104,26 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-
             user = form.save(commit=False)
-            password = form.cleaned_data['password']
-            user.set_password(password)
+            user.set_password(form.cleaned_data['password'])
+            user.is_active = False  # 👈 prevent login until verified
 
-            user_status = form.cleaned_data['user_status']
-            if user_status == 'staff':
+            if form.cleaned_data['user_status'] == 'staff':
                 user.is_staff = True
-
             user.save()
 
             Profile.objects.create(
                 user=user,
                 phone_number=form.cleaned_data['phone_number'],
-                user_status=user_status,
+                user_status=form.cleaned_data['user_status']
             )
-            return redirect('login')
+
+            send_verification_email(request, user)
+
+            return render(request, 'verification_sent.html')  # Create this page
     else:
         form = RegisterForm()
-
+    
     return render(request, 'register.html', {'form': form})
 
 
