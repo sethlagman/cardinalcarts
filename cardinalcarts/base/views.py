@@ -106,7 +106,7 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            
+
             user.username = user.username.lower()
             user.first_name = user.first_name.lower()
             user.last_name = user.last_name.lower()
@@ -377,8 +377,8 @@ def adminOrder(request):
 @staff_member_required
 def add_order(request):
     if request.method == 'POST':
-        first_name = request.POST.get('first_name', '').strip()
-        last_name = request.POST.get('last_name', '').strip()
+        first_name = request.POST.get('first_name', '').strip().lower()
+        last_name = request.POST.get('last_name', '').strip().lower()
         status = request.POST.get('status')
         quantities = request.POST.getlist('quantities')
         payment_method = request.POST.get('payment_method')
