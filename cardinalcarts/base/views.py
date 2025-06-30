@@ -5,12 +5,17 @@ from .forms import RegisterForm, ProductForm
 from .models import Profile, Product, CartItem, WishlistItem, OrderItem, Order, Transaction, UserActionLog, OrderActionLog, ProductActionLog
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST
-from django.contrib.auth import login as auth_login
+from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseForbidden
 import random
 from django.contrib import messages
 from django.db.models import Q
+from django.utils import timezone
+from datetime import timedelta
+
+MAX_ATTEMPTS = 5
+LOCKOUT_TIME = 300
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -18,21 +23,47 @@ def login_view(request):
             return redirect('adminUser')
         return redirect('dashboard')
     
+    if 'login_attempts' not in request.session:
+        request.session['login_attempts'] = 0
+        request.session['last_attempt_time'] = str(timezone.now())
+
+    last_attempt_time = timezone.datetime.fromisoformat(request.session['last_attempt_time'])
+
+    if request.session['login_attempts'] >= MAX_ATTEMPTS:
+        if timezone.now() - last_attempt_time < timedelta(seconds=LOCKOUT_TIME):
+            time_left = timedelta(seconds=LOCKOUT_TIME) - (timezone.now() - last_attempt_time)
+            minutes, seconds = divmod(time_left.seconds, 60)
+            return render(request, 'login.html', {
+                'error': f'Too many login attempts. Try again in {minutes}m {seconds}s'
+            })
+        else:
+            request.session['login_attempts'] = 0
+
+    context = {}
+
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
+
         try:
             user = User.objects.get(email=email)
-            user = authenticate(request, username=user.username, password=password)
-            if user:
-                auth_login(request, user)
-
-                if user.is_staff:
+            auth_user = authenticate(request, username=user.username, password=password)
+            if auth_user:
+                auth_login(request, auth_user)
+                request.session['login_attempts'] = 0
+                if auth_user.is_staff:
                     return redirect('adminInventory')
                 return redirect('dashboard')
+            else:
+                request.session['login_attempts'] += 1
+                request.session['last_attempt_time'] = str(timezone.now())
+                context['error'] = f"Incorrect email or password. Attempts left: {MAX_ATTEMPTS - request.session['login_attempts']}"
         except User.DoesNotExist:
-            pass
-    return render(request, 'login.html')
+            request.session['login_attempts'] += 1
+            request.session['last_attempt_time'] = str(timezone.now())
+            context['error'] = f"Incorrect email or password. Attempts left: {MAX_ATTEMPTS - request.session['login_attempts']}"
+
+    return render(request, 'login.html', context)
 
 
 def register(request):

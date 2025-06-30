@@ -1,0 +1,796 @@
+[
+{
+  "model": "base.profile",
+  "pk": 4,
+  "fields": {
+    "user": 5,
+    "phone_number": "098765",
+    "user_status": "staff"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 5,
+  "fields": {
+    "user": 7,
+    "phone_number": "090909",
+    "user_status": "student"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 6,
+  "fields": {
+    "user": 8,
+    "phone_number": "575757",
+    "user_status": "faculty"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 8,
+  "fields": {
+    "user": 10,
+    "phone_number": "909090",
+    "user_status": "student"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 12,
+  "fields": {
+    "user": 24,
+    "phone_number": "50505050",
+    "user_status": "Student"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 13,
+  "fields": {
+    "user": 25,
+    "phone_number": "67676767",
+    "user_status": "Faculty"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 15,
+  "fields": {
+    "user": 27,
+    "phone_number": "50505050",
+    "user_status": "Student"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 16,
+  "fields": {
+    "user": 28,
+    "phone_number": "131321342134234",
+    "user_status": "student"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 20,
+  "fields": {
+    "user": 32,
+    "phone_number": "123456789",
+    "user_status": "student"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 21,
+  "fields": {
+    "user": 33,
+    "phone_number": "123456789",
+    "user_status": "student"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 22,
+  "fields": {
+    "user": 34,
+    "phone_number": "023323432434",
+    "user_status": "student"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 23,
+  "fields": {
+    "user": 35,
+    "phone_number": "3423424324324",
+    "user_status": "student"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 25,
+  "fields": {
+    "user": 37,
+    "phone_number": "42343312321323",
+    "user_status": "Faculty"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 28,
+  "fields": {
+    "user": 40,
+    "phone_number": "123",
+    "user_status": "student"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 29,
+  "fields": {
+    "user": 41,
+    "phone_number": "1234",
+    "user_status": "student"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 30,
+  "fields": {
+    "user": 42,
+    "phone_number": "12345",
+    "user_status": "student"
+  }
+},
+{
+  "model": "base.profile",
+  "pk": 31,
+  "fields": {
+    "user": 43,
+    "phone_number": "123456789",
+    "user_status": "faculty"
+  }
+},
+{
+  "model": "base.product",
+  "pk": 34,
+  "fields": {
+    "name": "Ruler",
+    "description": "Standard ruler",
+    "price": "12.00",
+    "quantity": 100
+  }
+},
+{
+  "model": "base.product",
+  "pk": 39,
+  "fields": {
+    "name": "Mapuan Cap",
+    "description": "Cardinal cap",
+    "price": "500.00",
+    "quantity": 0
+  }
+},
+{
+  "model": "base.cartitem",
+  "pk": 76,
+  "fields": {
+    "user": 42,
+    "product": 34,
+    "quantity": 2
+  }
+},
+{
+  "model": "base.wishlistitem",
+  "pk": 27,
+  "fields": {
+    "user": 5,
+    "product": 34
+  }
+},
+{
+  "model": "base.wishlistitem",
+  "pk": 30,
+  "fields": {
+    "user": 42,
+    "product": 39
+  }
+},
+{
+  "model": "base.order",
+  "pk": 47,
+  "fields": {
+    "user": 5,
+    "order_number": "43609729",
+    "status": "Ready for Pickup",
+    "payment_method": "pickup",
+    "total_amount": "8.00",
+    "order_date": "2025-04-11T11:05:52.208Z",
+    "pickup_date": "2025-04-16"
+  }
+},
+{
+  "model": "base.order",
+  "pk": 49,
+  "fields": {
+    "user": 28,
+    "order_number": "91978954",
+    "status": "Processing",
+    "payment_method": "online",
+    "total_amount": "130.00",
+    "order_date": "2025-04-14T04:33:13.170Z",
+    "pickup_date": "2025-01-10"
+  }
+},
+{
+  "model": "base.order",
+  "pk": 50,
+  "fields": {
+    "user": 5,
+    "order_number": "85509441",
+    "status": "Ready for Pickup",
+    "payment_method": "online",
+    "total_amount": "28.00",
+    "order_date": "2025-04-14T16:48:35.654Z",
+    "pickup_date": "2025-04-17"
+  }
+},
+{
+  "model": "base.order",
+  "pk": 53,
+  "fields": {
+    "user": 33,
+    "order_number": "58120745",
+    "status": "Processing",
+    "payment_method": "pickup",
+    "total_amount": "2180.00",
+    "order_date": "2025-04-16T04:38:17.205Z",
+    "pickup_date": null
+  }
+},
+{
+  "model": "base.order",
+  "pk": 57,
+  "fields": {
+    "user": 42,
+    "order_number": "66708913",
+    "status": "Ready for Pickup",
+    "payment_method": "online",
+    "total_amount": "43000.00",
+    "order_date": "2025-06-17T01:35:10.589Z",
+    "pickup_date": "2025-06-19"
+  }
+},
+{
+  "model": "base.orderitem",
+  "pk": 55,
+  "fields": {
+    "order": 49,
+    "product": 34,
+    "quantity": 5,
+    "price": "12.00",
+    "total_price": "60.00"
+  }
+},
+{
+  "model": "base.orderitem",
+  "pk": 60,
+  "fields": {
+    "order": 53,
+    "product": 34,
+    "quantity": 15,
+    "price": "12.00",
+    "total_price": "180.00"
+  }
+},
+{
+  "model": "base.orderitem",
+  "pk": 61,
+  "fields": {
+    "order": 53,
+    "product": 39,
+    "quantity": 4,
+    "price": "500.00",
+    "total_price": "2000.00"
+  }
+},
+{
+  "model": "base.orderitem",
+  "pk": 66,
+  "fields": {
+    "order": 57,
+    "product": 39,
+    "quantity": 86,
+    "price": "500.00",
+    "total_price": "43000.00"
+  }
+},
+{
+  "model": "base.transaction",
+  "pk": 13,
+  "fields": {
+    "order_number": "63435216",
+    "user": 5,
+    "items": "Notebook (x1) - ₱15.00\nPencil (x1) - ₱10.00",
+    "date_of_order": "2025-04-11",
+    "total_price": "25.00"
+  }
+},
+{
+  "model": "base.transaction",
+  "pk": 14,
+  "fields": {
+    "order_number": "79746986",
+    "user": 27,
+    "items": "Notebook (x2) - ₱15.00",
+    "date_of_order": "2025-04-11",
+    "total_price": "30.00"
+  }
+},
+{
+  "model": "base.transaction",
+  "pk": 15,
+  "fields": {
+    "order_number": "92664599",
+    "user": 5,
+    "items": "Eraser (x1) - ₱10.00\nSharpener (x1) - ₱7.00",
+    "date_of_order": "2025-04-11",
+    "total_price": "17.00"
+  }
+},
+{
+  "model": "base.transaction",
+  "pk": 16,
+  "fields": {
+    "order_number": "42316418",
+    "user": 5,
+    "items": "Ruler (x4) - ₱12.00\nNotebook (x2) - ₱15.00",
+    "date_of_order": "2025-04-11",
+    "total_price": "78.00"
+  }
+},
+{
+  "model": "base.transaction",
+  "pk": 17,
+  "fields": {
+    "order_number": "99769113",
+    "user": 28,
+    "items": "Pencil (x5) - ₱10.00",
+    "date_of_order": "2025-04-16",
+    "total_price": "50.00"
+  }
+},
+{
+  "model": "base.transaction",
+  "pk": 18,
+  "fields": {
+    "order_number": "34305067",
+    "user": 37,
+    "items": "Monitor (x5) - ₱5000.00",
+    "date_of_order": "2025-04-16",
+    "total_price": "25000.00"
+  }
+},
+{
+  "model": "base.useractionlog",
+  "pk": 4,
+  "fields": {
+    "action_type": "add",
+    "admin_user": 5,
+    "timestamp": "2025-04-15T17:23:25.842Z",
+    "details": "Added user Bobby Turner, status: student"
+  }
+},
+{
+  "model": "base.useractionlog",
+  "pk": 5,
+  "fields": {
+    "action_type": "edit",
+    "admin_user": 5,
+    "timestamp": "2025-04-15T17:23:53.463Z",
+    "details": "Edited user Boblie Tunie (changes: {'first_name': 'Bobby', 'last_name': 'Turner', 'email': 'bobby@gmail.com'})"
+  }
+},
+{
+  "model": "base.useractionlog",
+  "pk": 6,
+  "fields": {
+    "action_type": "delete",
+    "admin_user": 5,
+    "timestamp": "2025-04-15T17:24:12.848Z",
+    "details": "Deleted user Boblie Tunie"
+  }
+},
+{
+  "model": "base.useractionlog",
+  "pk": 7,
+  "fields": {
+    "action_type": "add",
+    "admin_user": 5,
+    "timestamp": "2025-04-15T18:24:36.284Z",
+    "details": "Added user Steve Harvey, status: faculty"
+  }
+},
+{
+  "model": "base.useractionlog",
+  "pk": 8,
+  "fields": {
+    "action_type": "delete",
+    "admin_user": 5,
+    "timestamp": "2025-04-15T18:33:05.154Z",
+    "details": "Deleted user Steve Harvey"
+  }
+},
+{
+  "model": "base.useractionlog",
+  "pk": 9,
+  "fields": {
+    "action_type": "delete",
+    "admin_user": 5,
+    "timestamp": "2025-04-15T18:33:19.041Z",
+    "details": "Deleted user cheese dog"
+  }
+},
+{
+  "model": "base.useractionlog",
+  "pk": 10,
+  "fields": {
+    "action_type": "add",
+    "admin_user": 5,
+    "timestamp": "2025-04-16T07:40:32.310Z",
+    "details": "Added user John Legend, status: student"
+  }
+},
+{
+  "model": "base.useractionlog",
+  "pk": 11,
+  "fields": {
+    "action_type": "edit",
+    "admin_user": 5,
+    "timestamp": "2025-04-16T07:40:59.703Z",
+    "details": "Edited user Johnnie Legendary (changes: {'first_name': 'John', 'last_name': 'Legend', 'email': 'legend@gmail.com'})"
+  }
+},
+{
+  "model": "base.useractionlog",
+  "pk": 12,
+  "fields": {
+    "action_type": "delete",
+    "admin_user": 5,
+    "timestamp": "2025-04-16T07:41:20.255Z",
+    "details": "Deleted user Johnnie Legendary"
+  }
+},
+{
+  "model": "base.useractionlog",
+  "pk": 13,
+  "fields": {
+    "action_type": "delete",
+    "admin_user": 5,
+    "timestamp": "2025-06-17T01:28:27.184Z",
+    "details": "Deleted user Max Manguerra"
+  }
+},
+{
+  "model": "base.useractionlog",
+  "pk": 14,
+  "fields": {
+    "action_type": "delete",
+    "admin_user": 5,
+    "timestamp": "2025-06-17T01:28:47.123Z",
+    "details": "Deleted user max Manguerra"
+  }
+},
+{
+  "model": "base.orderactionlog",
+  "pk": 1,
+  "fields": {
+    "action_type": "add",
+    "admin_user": 5,
+    "timestamp": "2025-04-15T17:44:50.213Z",
+    "details": "Added order #99769113 with status Processing and total amount 50.00"
+  }
+},
+{
+  "model": "base.orderactionlog",
+  "pk": 2,
+  "fields": {
+    "action_type": "edit",
+    "admin_user": 5,
+    "timestamp": "2025-04-15T17:45:06.932Z",
+    "details": "Updated order #99769113 to status Completed and pickup date 2025-01-01"
+  }
+},
+{
+  "model": "base.orderactionlog",
+  "pk": 3,
+  "fields": {
+    "action_type": "delete",
+    "admin_user": 5,
+    "timestamp": "2025-04-15T17:45:43.770Z",
+    "details": "Deleted order #40542743"
+  }
+},
+{
+  "model": "base.orderactionlog",
+  "pk": 4,
+  "fields": {
+    "action_type": "add",
+    "admin_user": 5,
+    "timestamp": "2025-04-16T07:43:22.405Z",
+    "details": "Added order #34305067 with status Processing and total amount 25000.00"
+  }
+},
+{
+  "model": "base.orderactionlog",
+  "pk": 5,
+  "fields": {
+    "action_type": "edit",
+    "admin_user": 5,
+    "timestamp": "2025-04-16T07:43:44.764Z",
+    "details": "Updated order #34305067 to status Ready for Pickup and pickup date 2025-10-10"
+  }
+},
+{
+  "model": "base.orderactionlog",
+  "pk": 6,
+  "fields": {
+    "action_type": "delete",
+    "admin_user": 5,
+    "timestamp": "2025-04-16T07:44:06.393Z",
+    "details": "Deleted order #91458761"
+  }
+},
+{
+  "model": "base.orderactionlog",
+  "pk": 7,
+  "fields": {
+    "action_type": "edit",
+    "admin_user": 5,
+    "timestamp": "2025-04-16T07:44:35.046Z",
+    "details": "Updated order #34305067 to status Completed and pickup date 2025-10-10"
+  }
+},
+{
+  "model": "base.orderactionlog",
+  "pk": 8,
+  "fields": {
+    "action_type": "edit",
+    "admin_user": 5,
+    "timestamp": "2025-06-17T01:36:38.650Z",
+    "details": "Updated order #66708913 to status Ready for Pickup and pickup date 2025-06-19"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 2,
+  "fields": {
+    "admin": 5,
+    "product_name": "Mouse",
+    "action": "delete",
+    "timestamp": "2025-04-15T18:04:11.575Z",
+    "details": "Deleted product: Mouse (₱350.00, Qty: 40)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 3,
+  "fields": {
+    "admin": 5,
+    "product_name": "Pencil",
+    "action": "delete",
+    "timestamp": "2025-04-15T18:05:20.469Z",
+    "details": "Deleted product: Pencil (₱10.00, Qty: 4)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 4,
+  "fields": {
+    "admin": 5,
+    "product_name": "Mapuan Cap",
+    "action": "add",
+    "timestamp": "2025-04-15T18:09:36.541Z",
+    "details": "Added product: Mapuan Cap (₱500, Qty: 100)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 5,
+  "fields": {
+    "admin": 5,
+    "product_name": "Mapuan Cap",
+    "action": "delete",
+    "timestamp": "2025-04-15T18:09:38.928Z",
+    "details": "Deleted product: Mapuan Cap (₱500.00, Qty: 100)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 6,
+  "fields": {
+    "admin": 5,
+    "product_name": "Monitor",
+    "action": "edit",
+    "timestamp": "2025-04-15T18:10:10.200Z",
+    "details": "Edited product: Monitor (₱5000, Qty: 150) → Monitor (₱5000, Qty: 150)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 7,
+  "fields": {
+    "admin": 5,
+    "product_name": "Mapuan Hoodie",
+    "action": "add",
+    "timestamp": "2025-04-16T07:41:59.652Z",
+    "details": "Added product: Mapuan Hoodie (₱759, Qty: 500)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 8,
+  "fields": {
+    "admin": 5,
+    "product_name": "Mapuan Hoodie",
+    "action": "edit",
+    "timestamp": "2025-04-16T07:42:22.639Z",
+    "details": "Edited product: Mapuan Hoodie (₱800, Qty: 100) → Mapuan Hoodie (₱800, Qty: 100)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 9,
+  "fields": {
+    "admin": 5,
+    "product_name": "Mapuan Hoodie",
+    "action": "delete",
+    "timestamp": "2025-04-16T07:42:29.050Z",
+    "details": "Deleted product: Mapuan Hoodie (₱800.00, Qty: 100)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 10,
+  "fields": {
+    "admin": 5,
+    "product_name": "Calculator",
+    "action": "add",
+    "timestamp": "2025-04-16T08:02:16.289Z",
+    "details": "Added product: Calculator (₱500, Qty: 232)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 11,
+  "fields": {
+    "admin": 5,
+    "product_name": "Calculator",
+    "action": "edit",
+    "timestamp": "2025-04-16T08:02:30.055Z",
+    "details": "Edited product: Calculator (₱750, Qty: 500) → Calculator (₱750, Qty: 500)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 12,
+  "fields": {
+    "admin": 5,
+    "product_name": "Calculator",
+    "action": "delete",
+    "timestamp": "2025-04-16T08:02:33.882Z",
+    "details": "Deleted product: Calculator (₱750.00, Qty: 500)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 13,
+  "fields": {
+    "admin": 5,
+    "product_name": "Monitor",
+    "action": "delete",
+    "timestamp": "2025-04-16T08:02:36.053Z",
+    "details": "Deleted product: Monitor (₱5000.00, Qty: 145)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 14,
+  "fields": {
+    "admin": 5,
+    "product_name": "Sharpener",
+    "action": "delete",
+    "timestamp": "2025-04-16T08:02:38.815Z",
+    "details": "Deleted product: Sharpener (₱7.00, Qty: 127)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 15,
+  "fields": {
+    "admin": 5,
+    "product_name": "Pen",
+    "action": "delete",
+    "timestamp": "2025-04-16T08:02:42.395Z",
+    "details": "Deleted product: Pen (₱8.00, Qty: 37)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 16,
+  "fields": {
+    "admin": 5,
+    "product_name": "Notebook",
+    "action": "add",
+    "timestamp": "2025-06-17T01:32:26.295Z",
+    "details": "Added product: Notebook (₱99999999, Qty: 9999999)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 17,
+  "fields": {
+    "admin": 5,
+    "product_name": "Notebookk",
+    "action": "edit",
+    "timestamp": "2025-06-17T01:32:44.053Z",
+    "details": "Edited product: Notebookk (₱99999999.00, Qty: 9999999) → Notebookk (₱99999999.00, Qty: 9999999)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 18,
+  "fields": {
+    "admin": 5,
+    "product_name": "Notebookk@",
+    "action": "edit",
+    "timestamp": "2025-06-17T01:32:49.356Z",
+    "details": "Edited product: Notebookk@ (₱99999999.00, Qty: 9999999) → Notebookk@ (₱99999999.00, Qty: 9999999)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 19,
+  "fields": {
+    "admin": 5,
+    "product_name": "Notebookk@",
+    "action": "edit",
+    "timestamp": "2025-06-17T01:33:14.085Z",
+    "details": "Edited product: Notebookk@ (₱99999999.00, Qty: 0) → Notebookk@ (₱99999999.00, Qty: 0)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 20,
+  "fields": {
+    "admin": 5,
+    "product_name": "Notebookk@",
+    "action": "delete",
+    "timestamp": "2025-06-17T01:33:24.316Z",
+    "details": "Deleted product: Notebookk@ (₱99999999.00, Qty: 0)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 21,
+  "fields": {
+    "admin": 5,
+    "product_name": "123",
+    "action": "add",
+    "timestamp": "2025-06-17T01:33:53.183Z",
+    "details": "Added product: 123 (₱123, Qty: 123)"
+  }
+},
+{
+  "model": "base.productactionlog",
+  "pk": 22,
+  "fields": {
+    "admin": 5,
+    "product_name": "123",
+    "action": "delete",
+    "timestamp": "2025-06-17T01:33:58.374Z",
+    "details": "Deleted product: 123 (₱123.00, Qty: 123)"
+  }
+}
+]

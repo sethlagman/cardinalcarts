@@ -43,13 +43,14 @@
       </div>
       <form method="POST">
         {% csrf_token %}
-        {% if form.errors %}
-          <p class="error">Invalid credentials. Please try again.</p>
+        
+        {% if error %}
+          <p class="error">{{ error }}</p>
         {% endif %}
-      
+        
         <input type="email" name="email" placeholder="Email" value="{{ request.POST.email }}" required />
         <input type="password" name="password" placeholder="Password" value="{{ request.POST.password }}" required />
-      
+
         <a href="#" class="forgot">Forgot password?</a>
         <button type="submit">Log In</button>
       </form>

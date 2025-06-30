@@ -45,11 +45,9 @@
     </header>
 
   <main>
-    <div class="filters">
-      <button class="filter-btn">BEST SELLER</button>
-      <button class="filter-btn">TRENDING</button>
-    </div>
-
+    <br>
+    <br>
+    <br>
     <section class="product-grid">
       {% for product in products %}
       <a href="{% url 'view_order' product.id %}">
