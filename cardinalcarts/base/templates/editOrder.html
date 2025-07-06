@@ -36,7 +36,9 @@
           {% csrf_token %}
           <div class="form-group">
               <label for="order_number">Enter Order Number</label>
-              <input type="text" name="order_number" id="order_number" required value="{% if order %}{{ order.order_number }}{% elif order_number_from_get %}{{ order_number_from_get }}{% endif %}">
+              <input type="text" name="order_number" id="order_number" required 
+                value="{% if order %}{{ order.order_number }}{% elif order_number_from_get %}{{ order_number_from_get }}{% endif %}"
+                {% if order_number_from_get %}readonly{% endif %}>
           </div>
           <div class="form-group">
               <button type="submit" class="submit-btn" name="submit_btn" value="Search Order">Search Order</button>
