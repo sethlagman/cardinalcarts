@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,11 +67,11 @@
             </div>
             <span class="product-name">{{ item.product.name }}</span>
           </div>
-          <div class="col">₱{{ item.product.price }}</div>
+          <div class="col">₱{{ item.product.price|intcomma }}</div>
           <div class="col quantity">
             <span>{{ item.quantity }}</span>
           </div>
-          <div class="col">₱{{ item.total_price }}</div>
+          <div class="col">₱{{ item.total_price|intcomma }}</div>
         </div>
         {% endfor %}
         
