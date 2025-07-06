@@ -52,7 +52,9 @@
           <input type="hidden" name="order_number" value="{% if order %}{{ order.order_number }}{% elif order_number_from_get %}{{ order_number_from_get }}{% endif %}">
           <div class="form-group">
               <label for="pickup_date">Pickup Date</label>
-              <input type="date" name="pickup_date" id="pickup_date" value="{{ order.pickup_date|date:'Y-m-d' }}">
+              <input type="date" name="pickup_date" id="pickup_date" 
+                value="{{ order.pickup_date|date:'Y-m-d' }}" 
+                min="{{ today }}">
           </div>
           <div class="form-group">
               <label for="status">Order Status</label>

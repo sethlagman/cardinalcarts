@@ -11,7 +11,7 @@ from django.http import HttpResponseForbidden
 from django.contrib import messages
 from django.db.models import Q
 from django.utils import timezone
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, date
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -569,7 +569,8 @@ def edit_order(request):
         'order': order,
         'error': error,
         'success': success,
-        'order_number_from_get': order_number_from_get
+        'order_number_from_get': order_number_from_get,
+        'today': date.today().isoformat()
     })
 
 
