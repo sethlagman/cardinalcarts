@@ -2,6 +2,8 @@
 
 CardinalCart is a web application that we proposed and developed to make purchasing school materials and university merchandise at Mapúa University simpler and more convenient for students, faculty, and staff. Built with Python, Django, and PostgreSQL, this platform aims to provide a seamless online shopping experience tailored to the Mapúa community.
 
+**Note: This is a bone template for the original CardinalCarts v1**
+
 ![Description of the image](https://raw.githubusercontent.com/sethlagman/cardinalcarts/main/logo.png)
 
 ## Features
@@ -17,6 +19,7 @@ CardinalCart is a web application that we proposed and developed to make purchas
 - **Python**: Main programming language used.
 - **Django**: This is the web framework that the app is running on.
 - **PostgreSQL**: One of the best DBMS to use with Django.
+- - **Render**: Optional production deployment.
 
 ## Installation
 
