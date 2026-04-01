@@ -19,7 +19,7 @@ CardinalCart is a web application that we proposed and developed to make purchas
 - **Python**: Main programming language used.
 - **Django**: This is the web framework that the app is running on.
 - **PostgreSQL**: One of the best DBMS to use with Django.
-- - **Render**: Optional production deployment.
+- **Render**: Optional production deployment.
 
 ## Installation
 
